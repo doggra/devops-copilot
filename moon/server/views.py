@@ -8,3 +8,4 @@ from .models import Server
 
 class ServerList(ListView):
 	model = Server
+	queryset = Server.objects.prefetch_related('stats')

@@ -7,8 +7,9 @@ from django.contrib.auth.models import User
 
 
 OS_DISTRO = (
-	(0, "Debian"),
-	(1, "CentOS"),
+	(0, "Unknown"),
+	(1, "Debian"),
+	(2, "CentOS"),
 )
 
 STATUS = (
@@ -23,16 +24,16 @@ class Server(models.Model):
 	owner = models.ForeignKey(User)
 	uuid = models.UUIDField(primary_key=True, default=uuid.uuid4,
 							editable=False, unique=True)
-	os = models.IntegerField(null=True, choices=OS_DISTRO)
+	os = models.IntegerField(default=0, choices=OS_DISTRO)
 	hostname = models.CharField(max_length=255)
 	status = models.IntegerField(default=0, choices=STATUS)
+	stats = models.ManyToManyField('ServerStats', blank=True)
 
 	def __unicode__(self):
 		return self.hostname
 
 
 class ServerStats(models.Model):
-	server = models.ForeignKey(Server)
 	datetime = models.DateTimeField(auto_now_add=True)
 	cpu_load_1 = models.DecimalField(max_digits=5, decimal_places=2)
 	cpu_load_5 = models.DecimalField(max_digits=5, decimal_places=2)
