@@ -6,6 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property
 
+
 OS_DISTRO = (
 	(0, "Unknown"),
 	(1, "Debian"),
@@ -30,7 +31,7 @@ class Server(models.Model):
 	stats = models.ManyToManyField('ServerStats', blank=True)
 
 	def __unicode__(self):
-		return self.hostname
+		return str(self.uuid)
 
 	@cached_property
 	def last_stats(self):
@@ -57,3 +58,12 @@ class ServerStats(models.Model):
 
 	def __unicode__(self):
 		return self.datetime.strftime("%Y/%m/%d %H:%M")
+
+	@cached_property
+	def get_cpu_load(self):
+		return {"1": self.cpu_load_1,
+				"5": self.cpu_load_5,
+				"15": self.cpu_load_15}
+
+	def get_mem_usage(self):
+		return "{}%".format(self.mem_usage)

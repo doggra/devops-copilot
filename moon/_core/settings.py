@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'server',
     'debug_toolbar',
+    'rest_framework'
 
 ]
 

@@ -4,9 +4,13 @@ from django.conf import settings
 
 
 urlpatterns = [
-	url(r'^server/', include('server.urls')),
     url(r'^admin/', admin.site.urls),
+
+	url(r'^server/', include('server.urls')),
+	url(r'^api/', include('api.urls')),
+
 ]
+
 
 if settings.DEBUG:
     import debug_toolbar
