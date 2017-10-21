@@ -29,3 +29,18 @@ class Server(models.Model):
 
 	def __unicode__(self):
 		return self.hostname
+
+
+class ServerStats(models.Model):
+	server = models.ForeignKey(Server)
+	datetime = models.DateTimeField(auto_now_add=True)
+	cpu_load_1 = models.DecimalField(max_digits=5, decimal_places=2)
+	cpu_load_5 = models.DecimalField(max_digits=5, decimal_places=2)
+	cpu_load_15 = models.DecimalField(max_digits=5, decimal_places=2)
+	mem_usage = models.IntegerField()
+	net_dl = models.IntegerField()
+	net_ul = models.IntegerField()
+	users = models.IntegerField()
+
+	def __unicode__(self):
+		return "{} {}".format(self.datetime.strftime("%Y%m%d%H%M"), self.server)
