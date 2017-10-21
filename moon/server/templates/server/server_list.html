@@ -1,3 +1,32 @@
-{% for obj in object_list %}
-{{obj}}
-{% endfor %}
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Hostname</th>
+			<th>OS</th>
+			<th>Status</th>
+			<th>CPU</th>
+			<th>MEM</th>
+			<th>Users</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for obj in object_list %}
+			<tr>
+				<td>{{ obj.hostname }}</td>
+				<td>{{ obj.get_os_display }}</td>
+				<td>{{ obj.get_status_display }}</td>
+				<td>
+					{{ obj.last_stats.cpu_1 }},&nbsp;
+					{{ obj.last_stats.cpu_5 }},&nbsp;
+					{{ obj.last_stats.cpu_15 }}
+				</td>
+				<td>{{ obj.last_stats.mem }}%</td>
+				<td>{{ obj.last_stats.users }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock content %}

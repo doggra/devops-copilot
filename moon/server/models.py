@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils.functional import cached_property
 
 OS_DISTRO = (
 	(0, "Unknown"),
@@ -32,6 +32,18 @@ class Server(models.Model):
 	def __unicode__(self):
 		return self.hostname
 
+	@cached_property
+	def last_stats(self):
+		stats = self.stats.latest('datetime')
+		return {"cpu_1": stats.cpu_load_5,
+				"cpu_5": stats.cpu_load_5,
+				"cpu_15": stats.cpu_load_15,
+				"mem": stats.mem_usage,
+				"net_dl": stats.net_dl,
+				"net_up": stats.net_ul,
+				"users": stats.users}
+
+
 
 class ServerStats(models.Model):
 	datetime = models.DateTimeField(auto_now_add=True)
@@ -44,4 +56,4 @@ class ServerStats(models.Model):
 	users = models.IntegerField()
 
 	def __unicode__(self):
-		return "{} {}".format(self.datetime.strftime("%Y%m%d%H%M"), self.server)
+		return self.datetime.strftime("%Y/%m/%d %H:%M")
