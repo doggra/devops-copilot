@@ -54,10 +54,10 @@
 							'<td>'+get_status_dot(server['status'])+'</td>'+
 							'<td>'+server['hostname']+'</td>'+
 							'<td>'+server['uuid']+'</td>'+
-							'<td><span class="cpu_load">'+load_list+'</span></td>'+
-							'<td><span class="mem_list">'+mem_list+'</span></td>'+
-							'<td><span class="net_ul_list">'+net_ul_list+'</span></td>'+
-							'<td><span class="net_dl_list">'+net_dl_list+'</span></td>'+
+							'<td><span class="cpu_load">'+load_list.toString()+'</span></td>'+
+							'<td><span class="mem_list">'+mem_list.toString()+'</span></td>'+
+							'<td><span class="net_ul_list">'+net_ul_list.toString()+'</span></td>'+
+							'<td><span class="net_dl_list">'+net_dl_list.toString()+'</span></td>'+
 							'<td>'+
 								'<a href="/server/details/'+server['uuid']+'/"'+
 								'class="btn btn-sm btn-primary">Details</a>'+
@@ -67,13 +67,12 @@
 
 				$('table#servers tbody:last-child').append(html);
 
-				$('.cpu_load').sparkline(load_list, {width: width, height: height});
-				$('.net_dl_list').sparkline(net_dl_list, {width: width, height: height});
-				$('.net_ul_list').sparkline(net_ul_list, {width: width, height: height});
-				$('.mem_list').sparkline(mem_list, {width: width, height: height, 
-											  "chartRangeMin": 0, "chartRangeMax": 100});
 			});
 
+			$('.cpu_load').each(function(){$(this).sparkline('html', {width: width, height: height})});
+			$('.net_dl_list').each(function(){$(this).sparkline('html', {width: width, height: height})});
+			$('.net_ul_list').each(function(){$(this).sparkline('html', {width: width, height: height})});
+			$('.mem_list').each(function(){$(this).sparkline('html', {width: width, height: height, chartRangeMin: 0, chartRangeMax: 100})});
 		});
 
 	});
