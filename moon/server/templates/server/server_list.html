@@ -1,32 +1,100 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extendhead %}
+<script type="text/javascript" src="{% static 'js/jquery.sparkline.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/server.css' %}">
+
+<script>
+	$(document).ready(function() {
+
+		function get_status_dot(status) {
+
+			if (status == 0) {
+				return '<span class="status-dot install"></span>'
+			}
+			else if (status == 1) {
+				return '<span class="status-dot ready"></span>'
+			}
+			else if (status == 2) {
+				return '<span class="status-dot updating"></span>'
+			}
+			else if (status == 3) {
+				return '<span class="status-dot alert"></span>'
+			}
+
+		}
+
+		var height = '24px';
+		var width = '90px';
+
+		// Get statistics from server.
+		$.ajax({
+			method: "GET",
+			url: "http://localhost:8000/api/server/stats/"
+		}).done(function(stats_data) {
+			console.log(stats_data);
+			stats_data.forEach(function(server) {
+
+				var load_list = [];
+				var mem_list = [];
+				var net_ul_list = [];
+				var net_dl_list = [];
+				var height = '24px';
+				var width = '90px';
+
+				server['stats'].forEach(function(stats) {
+					load_list.push(stats['cpu_15']);
+					mem_list.push(stats['mem']);
+					net_ul_list.push(stats['net_ul']);
+					net_dl_list.push(stats['net_dl']);
+				});
+
+				html =  '<tr>'+
+							'<td>'+get_status_dot(server['status'])+'</td>'+
+							'<td>'+server['hostname']+'</td>'+
+							'<td>'+server['uuid']+'</td>'+
+							'<td><span class="cpu_load">'+load_list+'</span></td>'+
+							'<td><span class="mem_list">'+mem_list+'</span></td>'+
+							'<td><span class="net_ul_list">'+net_ul_list+'</span></td>'+
+							'<td><span class="net_dl_list">'+net_dl_list+'</span></td>'+
+							'<td>'+
+								'<a href="/server/details/'+server['uuid']+'/"'+
+								'class="btn btn-sm btn-primary">Details</a>'+
+								'<a href="#" class="btn btn-sm btn-primary">Logs</a>'
+							'</td>'+
+						'</tr>'
+
+				$('table#servers tbody:last-child').append(html);
+
+				$('.cpu_load').sparkline(load_list, {width: width, height: height});
+				$('.net_dl_list').sparkline(net_dl_list, {width: width, height: height});
+				$('.net_ul_list').sparkline(net_ul_list, {width: width, height: height});
+				$('.mem_list').sparkline(mem_list, {width: width, height: height, 
+											  "chartRangeMin": 0, "chartRangeMax": 100});
+			});
+
+		});
+
+	});
+</script>
+{% endblock extendhead %}
 
 {% block content %}
-<table class="table">
+<table id="servers" class="table">
 	<thead>
 		<tr>
+			<th style="width:20px;"></th>
 			<th>Hostname</th>
-			<th>OS</th>
-			<th>Status</th>
+			<th>UUID</th>
 			<th>CPU</th>
 			<th>MEM</th>
-			<th>Users</th>
+			<th>NET U/L</th>
+			<th>NET D/L</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for obj in object_list %}
-			<tr>
-				<td>{{ obj.hostname }}</td>
-				<td>{{ obj.get_os_display }}</td>
-				<td>{{ obj.get_status_display }}</td>
-				<td>
-					{{ obj.last_stats.cpu_1 }},&nbsp;
-					{{ obj.last_stats.cpu_5 }},&nbsp;
-					{{ obj.last_stats.cpu_15 }}
-				</td>
-				<td>{{ obj.last_stats.mem }}%</td>
-				<td>{{ obj.last_stats.users }}</td>
-			</tr>
-		{% endfor %}
 	</tbody>
 </table>
 {% endblock content %}

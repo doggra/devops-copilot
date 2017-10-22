@@ -1,0 +1,13 @@
+.jqstooltip {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+body { font-size:1.2rem; }
+td, th { vertical-align: inherit !important; }
+
+.status-dot:before { content: "\25cf"; font-size: 1.5em; }
+.status-dot.ready { color: green; }
+.status-dot.alert { color: red; }
+.status-dot.updating { color: orange; }
+.status-dot.install { color: blue; }
